@@ -451,7 +451,9 @@
 
     </div>
   </section>
-  <div class="submit-wrap"><button class="btn-submit" onclick="submitAnswers()">Submit Answers</button></div>
+  <div class="submit-wrap" id="submitWrap" style="display:none">
+    <button class="btn-submit" onclick="submitAnswers()">Submit Answers</button>
+  </div>
 </main>
 <div class="modal-overlay" id="resultsModal">
   <div class="modal">
@@ -493,14 +495,17 @@ function setSpeed(rate) {
   document.querySelectorAll('.speed-btn').forEach(b => b.classList.toggle('active', parseFloat(b.textContent) === rate));
 }
 function loadTrackForPart(n) { audioSrc.src = audioTracks[n]; audioNum.textContent = n; player.load(); }
+
 function switchPart(n) {
-  document.querySelectorAll('.part-tab').forEach(t => t.classList.remove('active'));
-  document.querySelector(`.part-tab[data-part="${n}"]`).classList.add('active');
-  document.querySelectorAll('.part-section').forEach(s => s.classList.remove('active'));
-  document.getElementById('part-'+n).classList.add('active');
-  if (currentMode !== 'simulation') loadTrackForPart(n);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.querySelectorAll('.part-section').forEach((el,i) => {
+    el.classList.toggle('active', i+1 === n);
+  });
+  document.querySelectorAll('.part-tab').forEach((el,i) => {
+    el.classList.toggle('active', i+1 === n);
+  });
+  document.getElementById('submitWrap').style.display = n === 4 ? 'block' : 'none';
 }
+
 let currentMode = null, currentSimSection = 0, reviewInterval = null, simHasStarted = false;
 function selectMode(mode) {
   currentMode = mode;
